@@ -8,79 +8,51 @@ function uploadImages() {
       const card = document.createElement('div');
       card.className = 'card';
 
-      // Bild
-      const img = document.createElement('img');
-      img.src = e.target.result;
+      // Vote-Spalte links
+      const voteSection = document.createElement('div');
+      voteSection.className = 'vote-section';
+      const upBtn = document.createElement('button'); upBtn.textContent = '▲';
+      const downBtn = document.createElement('button'); downBtn.textContent = '▼';
+      const voteCount = document.createElement('div'); voteCount.className = 'vote-count'; voteCount.textContent = '0';
+      voteSection.appendChild(upBtn);
+      voteSection.appendChild(voteCount);
+      voteSection.appendChild(downBtn);
 
-      // Inhalt
+      // Bild + Inhalte rechts
       const content = document.createElement('div');
       content.className = 'card-content';
+      const img = document.createElement('img'); img.src = e.target.result;
 
-      // Statistiken
-      const stats = document.createElement('div');
-      stats.className = 'stats';
-      stats.innerHTML = `<span>👁️ 0</span> <span>👍 0 👎 0</span>`;
+      const stats = document.createElement('div'); stats.className='stats'; stats.textContent = '👁️ 0 &nbsp; Kommentare: 0';
 
-      // Buttons
-      const buttons = document.createElement('div');
-      buttons.className = 'buttons';
-      const upBtn = document.createElement('button');
-      upBtn.textContent = '👍';
-      const downBtn = document.createElement('button');
-      downBtn.textContent = '👎';
-      buttons.appendChild(upBtn);
-      buttons.appendChild(downBtn);
+      const comments = document.createElement('div'); comments.className='comments';
 
-      // Kommentare
-      const comments = document.createElement('div');
-      comments.className = 'comments';
-      comments.innerHTML = '<b>Kommentare:</b>';
+      const commentInput = document.createElement('div'); commentInput.className='comment-input';
+      const inputBox = document.createElement('input'); inputBox.placeholder='Kommentar schreiben...';
+      const sendBtn = document.createElement('button'); sendBtn.textContent='Senden';
+      commentInput.appendChild(inputBox); commentInput.appendChild(sendBtn);
 
-      // Kommentar-Eingabe
-      const commentInput = document.createElement('div');
-      commentInput.className = 'comment-input';
-      const inputBox = document.createElement('input');
-      inputBox.placeholder = 'Kommentar schreiben...';
-      const sendBtn = document.createElement('button');
-      sendBtn.textContent = 'Senden';
-      commentInput.appendChild(inputBox);
-      commentInput.appendChild(sendBtn);
+      content.appendChild(img); content.appendChild(stats); content.appendChild(comments); content.appendChild(commentInput);
 
-      // Event-Listener für Up/Downvotes
-      let upvotes = 0, downvotes = 0, views = 0;
-      img.addEventListener('click', () => {
-        views++;
-        updateStats();
-      });
-      upBtn.addEventListener('click', () => { upvotes++; updateStats(); });
-      downBtn.addEventListener('click', () => { downvotes++; updateStats(); });
+      card.appendChild(voteSection); card.appendChild(content);
 
-      function updateStats() {
-        stats.innerHTML = `👁️ ${views} &nbsp;&nbsp; 👍 ${upvotes} 👎 ${downvotes}`;
-      }
-
-      // Kommentar senden
+      // Event-Listener
+      let votes = 0, views = 0, commentCount=0;
+      img.addEventListener('click', () => { views++; stats.textContent=`👁️ ${views} &nbsp; Kommentare: ${commentCount}`; });
+      upBtn.addEventListener('click', () => { votes++; voteCount.textContent=votes; });
+      downBtn.addEventListener('click', () => { votes--; voteCount.textContent=votes; });
       sendBtn.addEventListener('click', () => {
-        if (inputBox.value.trim() !== '') {
-          const c = document.createElement('div');
-          c.textContent = inputBox.value;
-          comments.appendChild(c);
-          inputBox.value = '';
+        if(inputBox.value.trim()!==''){
+          const c=document.createElement('div'); c.textContent=inputBox.value;
+          comments.appendChild(c); commentCount++; stats.textContent=`👁️ ${views} &nbsp; Kommentare: ${commentCount}`;
+          inputBox.value='';
         }
       });
-
-      content.appendChild(stats);
-      content.appendChild(buttons);
-      content.appendChild(comments);
-      content.appendChild(commentInput);
-
-      card.appendChild(img);
-      card.appendChild(content);
 
       gallery.appendChild(card);
     }
     reader.readAsDataURL(file);
   }
 
-  input.value = '';
+  input.value='';
 }
